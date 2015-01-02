@@ -1,3 +1,4 @@
+import csv
 import pdb
 from bs4 import BeautifulSoup
 import requests
@@ -45,7 +46,26 @@ for index,link in enumerate(allLinks):
       detailPage = response.read()
     #  print (detailPage)
       datailPageSoup = BeautifulSoup(detailPage)
-      print (datailPageSoup)
+    #  print (datailPageSoup)
+      optionItems = datailPageSoup.findAll('option')
+      detailPageURL = judgeQueryURL[:judgeQueryURL.rfind('/')+1] + 'detail.asp'
+      for index,optionItem in enumerate(optionItems):
+        if index > 0:
+          continue
+        detailPageRequestPara = {'IdNo':optionItem.get('value'),'Search':'Submit'}
+        detailPageRequestData = urllib.parse.urlencode(detailPageRequestPara)
+        detailPageRequestData = detailPageRequestData.encode(encoding='UTF8')
+        detailPageReq = urllib.request.Request(detailPageURL,detailPageRequestData) 
+        detailPageRes = urllib.request.urlopen(detailPageReq)
+        detailPage1 = detailPageRes.read()
+        detailPage1Soup = BeautifulSoup(detailPage1)
+        print (detailPage1Soup)
+        
+       
+        with open('result.csv', 'a', newline='') as csvfile:
+          spamwriter = csv.writer(csvfile, delimiter=',')
+          spamwriter.writerow(['a', 'b' , 'c'])
+      
   
 
 
